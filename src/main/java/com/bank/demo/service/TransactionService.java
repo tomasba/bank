@@ -2,11 +2,11 @@ package com.bank.demo.service;
 
 import com.bank.demo.dao.TransactionRepository;
 import com.bank.demo.domain.entity.Transaction;
-import com.bank.demo.domain.model.PaymentRequest;
+import org.apache.commons.collections4.IterableUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class TransactionService {
@@ -15,13 +15,11 @@ public class TransactionService {
     private TransactionRepository transactionRepository;
 
     public <T extends Transaction> T saveTransaction(T t) {
-        return transactionRepository.save(t);
+        return (T) transactionRepository.save(t);
     }
 
-    @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public void transfer(PaymentRequest paymentDetails) {
-//        Account accountFrom = accountService.findAccount(paymentDetails.getFromIban());
-//        Account accountTo = accountService.findAccount(paymentDetails.getToIban());
+    public List<Transaction> findAllTransactions() {
+        return IterableUtils.toList(transactionRepository.findAll());
     }
 
 }

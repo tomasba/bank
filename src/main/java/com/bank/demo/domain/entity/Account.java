@@ -14,7 +14,6 @@ public class Account {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "account_id_gen")
-    //@GeneratedValue(strategy = GenerationType.AUTO)
     @Column(unique = true, updatable = false, nullable = false)
     private Long id;
 
@@ -28,7 +27,6 @@ public class Account {
     @Column(nullable = false)
     private BigDecimal balance = BigDecimal.ZERO;
 
-    //cascade = {CascadeType.PERSIST},fetch= FetchType.EAGER,
     @OneToMany
     @JoinColumn(name = "account_id")
     private Set<TransactionCancel> cancellTransactions;

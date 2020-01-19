@@ -26,23 +26,31 @@ public class PaymentTransactionService {
     public void transfer(String fromIban, String toIban, BigDecimal amount) {
         accountSynchronizer.execute(fromIban, toIban, () -> {
             String uid = UUID.randomUUID().toString();
-
-            Account fromAccount = accountService.findAccount(fromIban);
-            TransactionWithdraw transactionWithdraw = new TransactionWithdraw();
-            transactionWithdraw.setAmount(amount);
-            transactionWithdraw.setUid(uid);
-            transactionWithdraw.setAccount(fromAccount);
-            fromAccount.addWithdrawTransactions(transactionService.saveTransaction(transactionWithdraw));
-            accountService.saveUpdate(fromAccount);
-
-            Account toAccount = accountService.findAccount(toIban);
-            TransactionDeposit transactionDeposit = new TransactionDeposit();
-            transactionDeposit.setAmount(amount);
-            transactionDeposit.setUid(uid);
-            transactionDeposit.setAccount(toAccount);
-            toAccount.addDepositTransactions(transactionService.saveTransaction(transactionDeposit));
-            accountService.saveUpdate(toAccount);
+            withdraw(fromIban, amount, uid);
+            credit(toIban, amount, uid);
         });
+    }
+
+    private void credit(String toIban, BigDecimal amount, String uid) {
+        Account toAccount = accountService.findAccount(toIban);
+        TransactionDeposit transactionDeposit = new TransactionDeposit();
+        transactionDeposit.setAmount(amount);
+        transactionDeposit.setUid(uid);
+        transactionDeposit.setAccount(toAccount);
+        toAccount.addDepositTransactions(transactionService.saveTransaction(transactionDeposit));
+        toAccount.setBalance(toAccount.getBalance().add(amount));
+        accountService.saveUpdate(toAccount);
+    }
+
+    private void withdraw(String fromIban, BigDecimal amount, String uid) {
+        Account fromAccount = accountService.findAccount(fromIban);
+        TransactionWithdraw transactionWithdraw = new TransactionWithdraw();
+        transactionWithdraw.setAmount(amount);
+        transactionWithdraw.setUid(uid);
+        transactionWithdraw.setAccount(fromAccount);
+        fromAccount.addWithdrawTransactions(transactionService.saveTransaction(transactionWithdraw));
+        fromAccount.setBalance(fromAccount.getBalance().subtract(amount));
+        accountService.saveUpdate(fromAccount);
     }
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
