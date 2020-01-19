@@ -1,7 +1,7 @@
 package com.bank.demo;
 
 import com.bank.demo.dao.AccountRepository;
-import com.bank.demo.dao.PaymentRepository;
+import com.bank.demo.dao.TransactionRepository;
 import com.bank.demo.domain.Currency;
 import com.bank.demo.domain.entity.Account;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +15,12 @@ import java.math.BigDecimal;
 public class InitialDataLoader implements ApplicationRunner {
 
     private AccountRepository accountRepository;
-    private PaymentRepository paymentRepository;
+    private TransactionRepository transactionRepository;
 
     @Autowired
-    public InitialDataLoader(AccountRepository accountRepository, PaymentRepository paymentRepository) {
+    public InitialDataLoader(AccountRepository accountRepository, TransactionRepository transactionRepository) {
         this.accountRepository = accountRepository;
-        this.paymentRepository = paymentRepository;
+        this.transactionRepository = transactionRepository;
     }
 
     @Override

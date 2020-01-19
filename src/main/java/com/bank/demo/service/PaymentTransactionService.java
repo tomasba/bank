@@ -18,7 +18,7 @@ public class PaymentTransactionService {
     @Autowired
     private AccountSynchronizer accountSynchronizer;
     @Autowired
-    private PaymentService paymentService;
+    private TransactionService transactionService;
     @Autowired
     private AccountService accountService;
 
@@ -31,15 +31,17 @@ public class PaymentTransactionService {
             TransactionWithdraw transactionWithdraw = new TransactionWithdraw();
             transactionWithdraw.setAmount(amount);
             transactionWithdraw.setUid(uid);
-
-            fromAccount.addWithdrawTransactions(transactionWithdraw);
+            transactionWithdraw.setAccount(fromAccount);
+            fromAccount.addWithdrawTransactions(transactionService.saveTransaction(transactionWithdraw));
+            accountService.saveUpdate(fromAccount);
 
             Account toAccount = accountService.findAccount(toIban);
             TransactionDeposit transactionDeposit = new TransactionDeposit();
             transactionDeposit.setAmount(amount);
             transactionDeposit.setUid(uid);
-            toAccount.addDepositTransactions(transactionDeposit);
-
+            transactionDeposit.setAccount(toAccount);
+            toAccount.addDepositTransactions(transactionService.saveTransaction(transactionDeposit));
+            accountService.saveUpdate(toAccount);
         });
     }
 

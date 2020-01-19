@@ -24,6 +24,10 @@ public class AccountService {
         return accountRepository.findAccountByIban(iban);
     }
 
+    public Account saveUpdate(Account account) {
+        return accountRepository.save(account);
+    }
+
     /*public void withdraw(Account account, BigDecimal amount) {
         account.account.getBalance().subtract(amount)
         balance = balance.subtract(amount);

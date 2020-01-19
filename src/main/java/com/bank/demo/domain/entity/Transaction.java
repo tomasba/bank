@@ -24,8 +24,8 @@ public abstract class Transaction {
     @Column(nullable = false)
     protected BigDecimal amount;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST})
-    @JoinColumn(name = "account_id")
+    @ManyToOne
+    @JoinColumn(name = "account_id", insertable = false, updatable = false)
     private Account account;
 
     public Long getId() {

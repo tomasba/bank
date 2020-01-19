@@ -29,13 +29,16 @@ public class Account {
     private BigDecimal balance = BigDecimal.ZERO;
 
     //cascade = {CascadeType.PERSIST},fetch= FetchType.EAGER,
-    @OneToMany(mappedBy = "id", cascade = {CascadeType.PERSIST})
+    @OneToMany
+    @JoinColumn(name = "account_id")
     private Set<TransactionCancel> cancellTransactions;
 
-    @OneToMany(mappedBy = "id", cascade = {CascadeType.PERSIST})
+    @OneToMany
+    @JoinColumn(name = "account_id")
     private Set<TransactionWithdraw> withdrawTransactions;
 
-    @OneToMany(mappedBy = "id", cascade = {CascadeType.PERSIST})
+    @OneToMany
+    @JoinColumn(name = "account_id")
     private Set<TransactionDeposit> depositTransactions;
 
     public Account() {
