@@ -24,6 +24,15 @@ public class AccountService {
         return accountRepository.findAccountByIban(iban);
     }
 
+    /*public void withdraw(Account account, BigDecimal amount) {
+        account.account.getBalance().subtract(amount)
+        balance = balance.subtract(amount);
+    }
+
+    public void deposit(BigDecimal amount) {
+        balance = balance.add(amount);
+    }*/
+
     public List<Account> findAccounts() {
         return IterableUtils.toList(accountRepository.findAll());
     }
