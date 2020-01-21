@@ -1,21 +1,16 @@
 package com.bank.demo.domain.entity;
 
+import com.bank.demo.domain.Operation;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "type")
-@SequenceGenerator(name = "transaction_id_gen", sequenceName = "transaction_seq", allocationSize = 1)
-@JsonSubTypes({
-        @JsonSubTypes.Type(value = TransactionCancel.class, name = "cancel"),
-        @JsonSubTypes.Type(value = TransactionDeposit.class, name = "deposit"),
-        @JsonSubTypes.Type(value = TransactionWithdraw.class, name = "withdraw")
-})
-public abstract class Transaction {
+@Table(name = "financial_transactions", uniqueConstraints = @UniqueConstraint(columnNames = {"account_id", "operation", "uid"}))
+public class Transaction {
 
     public Transaction() {
     }
@@ -31,11 +26,15 @@ public abstract class Transaction {
     @Column(nullable = false)
     protected BigDecimal amount;
 
-    @Column(name = "account_id", insertable = false, updatable = false)
+    @Column(name = "account_id", updatable = false)
     protected String accountId;
 
-    @Column(insertable = false, updatable = false)
-    protected String type;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    protected Operation operation;
+
+    @CreationTimestamp
+    private LocalDateTime createDateTime;
 
     @ManyToOne
     @JoinColumn(name = "account_id", insertable = false, updatable = false)
@@ -66,14 +65,6 @@ public abstract class Transaction {
         this.amount = amount;
     }
 
-    public Account getAccount() {
-        return account;
-    }
-
-    public void setAccount(Account account) {
-        this.account = account;
-    }
-
     public String getAccountId() {
         return accountId;
     }
@@ -82,11 +73,27 @@ public abstract class Transaction {
         this.accountId = accountId;
     }
 
-    public String getType() {
-        return type;
+    public LocalDateTime getCreateDateTime() {
+        return createDateTime;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setCreateDateTime(LocalDateTime createDateTime) {
+        this.createDateTime = createDateTime;
+    }
+
+    public Account getAccount() {
+        return account;
+    }
+
+    public void setAccount(Account account) {
+        this.account = account;
+    }
+
+    public Operation getOperation() {
+        return operation;
+    }
+
+    public void setOperation(Operation operation) {
+        this.operation = operation;
     }
 }

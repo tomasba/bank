@@ -20,23 +20,6 @@ public class AccountService {
         accountRepository.save(account);
     }
 
-    public Account findAccount(String iban) {
-        return accountRepository.findAccountByIban(iban);
-    }
-
-    public Account saveUpdate(Account account) {
-        return accountRepository.save(account);
-    }
-
-    /*public void withdraw(Account account, BigDecimal amount) {
-        account.account.getBalance().subtract(amount)
-        balance = balance.subtract(amount);
-    }
-
-    public void deposit(BigDecimal amount) {
-        balance = balance.add(amount);
-    }*/
-
     public List<Account> findAccounts() {
         return IterableUtils.toList(accountRepository.findAll());
     }

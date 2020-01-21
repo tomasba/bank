@@ -25,7 +25,7 @@ public class InitialDataLoader implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
-        Account acc1 = new Account("111", Currency.EUR, BigDecimal.valueOf(1000));
+        Account acc1 = new Account("111", Currency.EUR, BigDecimal.valueOf(100));
         Account acc2 = new Account("222", Currency.EUR, BigDecimal.valueOf(100));
         Account acc3 = new Account("333", Currency.EUR, BigDecimal.valueOf(0));
         accountRepository.save(acc1);

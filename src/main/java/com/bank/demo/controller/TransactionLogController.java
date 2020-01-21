@@ -14,7 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("transactions")
-public class TransactionController {
+public class TransactionLogController {
 
     @Autowired
     private TransactionService transactionService;
@@ -23,5 +23,6 @@ public class TransactionController {
     public ResponseEntity<List<Transaction>> findAll() {
         return ResponseEntity.status(HttpStatus.OK).body(transactionService.findAllTransactions());
     }
+
 
 }

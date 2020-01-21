@@ -1,14 +1,16 @@
 package com.bank.demo.domain.entity;
 
 import com.bank.demo.domain.Currency;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.HashSet;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Entity
-@Table(name = "accounts")
+@Table(name = "accounts", uniqueConstraints = @UniqueConstraint(columnNames = {"iban"}))
 @SequenceGenerator(name = "account_id_gen", sequenceName = "account_seq", allocationSize = 1)
 public class Account {
 
@@ -27,17 +29,13 @@ public class Account {
     @Column(nullable = false)
     private BigDecimal balance = BigDecimal.ZERO;
 
-    @OneToMany
-    @JoinColumn(name = "account_id")
-    private Set<TransactionCancel> cancellTransactions;
+    @CreationTimestamp
+    private LocalDateTime createDateTime;
 
-    @OneToMany
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "account_id")
-    private Set<TransactionWithdraw> withdrawTransactions;
-
-    @OneToMany
-    @JoinColumn(name = "account_id")
-    private Set<TransactionDeposit> depositTransactions;
+    @JsonIgnore
+    private Set<Transaction> transactions;
 
     public Account() {
     }
@@ -48,28 +46,9 @@ public class Account {
         this.balance = balance;
     }
 
-    public void addCancellTransactions(TransactionCancel transactionCancel) {
-        if (cancellTransactions == null) {
-            cancellTransactions = new HashSet<>();
-        }
-        cancellTransactions.add(transactionCancel);
-        transactionCancel.setAccount(this);
-    }
-
-    public void addWithdrawTransactions(TransactionWithdraw transactionWithdraw) {
-        if (withdrawTransactions == null) {
-            withdrawTransactions = new HashSet<>();
-        }
-        withdrawTransactions.add(transactionWithdraw);
-        transactionWithdraw.setAccount(this);
-    }
-
-    public void addDepositTransactions(TransactionDeposit transactionDeposit) {
-        if (depositTransactions == null) {
-            depositTransactions = new HashSet<>();
-        }
-        depositTransactions.add(transactionDeposit);
-        transactionDeposit.setAccount(this);
+    public void addTransaction(Transaction tr) {
+        transactions.add(tr);
+        tr.setAccount(this);
     }
 
     public Account(String iban, Currency currency) {
@@ -119,27 +98,19 @@ public class Account {
         this.balance = balance;
     }
 
-    public Set<TransactionCancel> getCancellTransactions() {
-        return cancellTransactions;
+    public LocalDateTime getCreateDateTime() {
+        return createDateTime;
     }
 
-    public void setCancellTransactions(Set<TransactionCancel> cancellTransactions) {
-        this.cancellTransactions = cancellTransactions;
+    public void setCreateDateTime(LocalDateTime createDateTime) {
+        this.createDateTime = createDateTime;
     }
 
-    public Set<TransactionWithdraw> getWithdrawTransactions() {
-        return withdrawTransactions;
+    public Set<Transaction> getTransactions() {
+        return transactions;
     }
 
-    public void setWithdrawTransactions(Set<TransactionWithdraw> withdrawTransactions) {
-        this.withdrawTransactions = withdrawTransactions;
-    }
-
-    public Set<TransactionDeposit> getDepositTransactions() {
-        return depositTransactions;
-    }
-
-    public void setDepositTransactions(Set<TransactionDeposit> depositTransactions) {
-        this.depositTransactions = depositTransactions;
+    public void setTransactions(Set<Transaction> transactions) {
+        this.transactions = transactions;
     }
 }

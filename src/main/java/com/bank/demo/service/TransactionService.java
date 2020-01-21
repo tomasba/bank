@@ -14,10 +14,6 @@ public class TransactionService {
     @Autowired
     private TransactionRepository transactionRepository;
 
-    public <T extends Transaction> T saveTransaction(T t) {
-        return (T) transactionRepository.save(t);
-    }
-
     public List<Transaction> findAllTransactions() {
         return IterableUtils.toList(transactionRepository.findAll());
     }
